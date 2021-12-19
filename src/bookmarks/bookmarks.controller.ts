@@ -1,25 +1,29 @@
 import { BookmarksService } from './bookmarks.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Bookmark } from './bookmark.model';
 import { CreateBookmarkDto } from './dto/create-bookmark.dto';
+import { GetBookmarkDto } from './dto/get-bookmark.dto';
 
 @Controller('bookmarks')
 export class BookmarksController {
-  constructor(private BookmarksService: BookmarksService) {}
+  constructor(private bookmarksService: BookmarksService) {}
 
   @Get()
-  findAll(): Bookmark[] {
-    return this.BookmarksService.findAll();
+  find(@Query() getBookmarkDto: GetBookmarkDto): Bookmark[] {
+    if (Object.keys(getBookmarkDto).length) {
+      return this.bookmarksService.find(getBookmarkDto);
+    }
+    return this.bookmarksService.findAll();
   }
 
   @Get('/:id')
   findById(@Param('id') id: string): Bookmark {
-    return this.BookmarksService.findById(id);
+    return this.bookmarksService.findById(id);
   }
 
   @Post()
   createBookmark(@Body() createBookmarkDto: CreateBookmarkDto): Bookmark {
-    return this.BookmarksService.createBookmarks(createBookmarkDto);
+    return this.bookmarksService.createBookmarks(createBookmarkDto);
   }
   //Post all bady data
   // @Post()
@@ -29,6 +33,6 @@ export class BookmarksController {
 
   // @Post()
   // createBookmark(@Body('url') url, @Body('description') description): Bookmark {
-  //   return  this.BookmarksService.createBookmarks(url, description)
+  //   return  this.bookmarksService.createBookmarks(url, description)
   // }
 }
